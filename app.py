@@ -136,19 +136,14 @@ st.sidebar.image("img/image.png", width=500)
 st.sidebar.title("Control Panel")
 
 # --- FILTER DATA KARIR ---
-st.sidebar.subheader("Filter Data Karir")
+st.sidebar.subheader("Filter Data berdasarkan bidang studi")
 career_filtered = career_df.copy()
 
 study_fields = sorted([str(x) for x in career_df['study_field'].dropna().unique()])
-selected_fields = st.sidebar.multiselect("Bidang Studi (Kosong = Semua):", options=study_fields)
+selected_fields = st.sidebar.multiselect("Bidang Studi):", options=study_fields)
 if selected_fields:
     career_filtered = career_filtered[career_filtered['study_field'].isin(selected_fields)]
     
-job_titles = sorted([str(x) for x in career_df['first_job_title'].dropna().unique()])
-selected_jobs = st.sidebar.multiselect("Target Karir (Kosong = Semua):", options=job_titles)
-if selected_jobs:
-    career_filtered = career_filtered[career_filtered['first_job_title'].isin(selected_jobs)]
-
 # --- FILTER DATA UDEMY ---
 st.sidebar.subheader("Filter Data Udemy")
 udemy_filtered = udemy_df.copy()
@@ -202,7 +197,7 @@ with tab1:
     </div>
     
     <div class="insight-card" style="border-left-color: #14b8a6;">
-        <div class="question-title">🔎 Informasi Pengumpulan Data (Gathering Data)</div>
+        <div class="question-title">Informasi Pengumpulan Data (Gathering Data)</div>
         <div class="insight-text">
             Sistem ini dibangun menggunakan dua dataset krusial yang saling berkesinambungan dan telah melalui tahap <i>Data Wrangling</i> secara menyeluruh:
             <ul>
@@ -289,7 +284,7 @@ with tab2:
             <div class="question-title">Business Question / Tantangan Analisis</div>
             <div class="insight-text"><b>Profil latar belakang studi dan jenis pekerjaan apa yang mendominasi data pengguna berdasarkan rentang ini?</b></div>
             <hr style='margin: 10px 0; border: 0; border-top: 1px solid #e2e8f0;'>
-            <div class="insight-text">💡 <b>Insight Data Scientist (Dinamis):</b> <br>
+            <div class="insight-text"><b>Insight Data Scientist (Dinamis):</b> <br>
             Dari <b>{total_filtered:,}</b> profil yang sedang Anda lihat, latar belakang studi yang paling mendominasi adalah <b>{str(top_study).upper()}</b>. 
             Hal ini berbanding lurus dengan tren pekerjaan, di mana sebagian besar dari kelompok ini berhasil terserap di industri sebagai <b>{str(top_job).title()}</b>.<br><br>
             Distribusi yang terpusat pada rumpun ilmu teknologi ini menegaskan bahwa sistem recommendation kita memiliki bias yang kuat namun terarah untuk menganalisis kesiapan karir di bidang Tech & Engineering.
@@ -309,7 +304,7 @@ with tab3:
         top_se_list = []
         
         with col3:
-            st.markdown("#### 15 Keahlian Utama Paling Dicari")
+            st.markdown("### 15 Keahlian Utama Paling Dicari")
             all_skills = [skill.strip() for skills in career_filtered['skills'] for skill in str(skills).replace(';', ',').split(',') if skill.strip()]
             top_skills = Counter(all_skills).most_common(15)
             skills_chart_df = pd.DataFrame(top_skills, columns=['Skill', 'Frekuensi'])
@@ -323,7 +318,7 @@ with tab3:
                 st.info("Tidak ada data keahlian (skill) untuk ditampilkan.")
             
         with col4:
-            st.markdown("#### Top 5 Skill (Klasifikasi Khusus)")
+            st.markdown("### Top 5 Skill (Klasifikasi Khusus)")
             # Jika user memfilter job title spesifik, kita gunakan mode dari job title tsb, jika tidak default ke SE
             specific_job = career_filtered['first_job_title'].mode()[0] if not career_filtered['first_job_title'].empty else 'Computer Software Engineer'
             
@@ -342,7 +337,7 @@ with tab3:
         st.markdown("---")
         
         # VISUALISASI JAWABAN PERTANYAAN 1: HUBUNGAN BIDANG STUDI DAN PEKERJAAN PERTAMA
-        st.markdown("#### Matriks Hubungan (Heatmap): Bidang Studi vs Pekerjaan Pertama")
+        st.markdown("### Matriks Hubungan (Heatmap): Bidang Studi vs Pekerjaan Pertama")
         
         top_jobs = career_filtered['first_job_title'].value_counts().head(8).index
         top_fields = career_filtered['study_field'].value_counts().head(8).index
@@ -367,7 +362,7 @@ with tab3:
         <div class="insight-card">
             <div class="question-title">1. Apakah terdapat hubungan antara bidang studi dan pekerjaan pertama?</div>
             <hr style='margin: 10px 0; border: 0; border-top: 1px solid #e2e8f0;'>
-            <div class="insight-text">💡 <b>Insight & Jawaban (Dinamis):</b> <br>
+            <div class="insight-text"> <b>Insight & Jawaban (Dinamis):</b> <br>
             Berdasarkan rentang data yang Anda amati saat ini, <i>skills</i> utama yang mendominasi profil pengguna adalah <b>{skill_str}</b>. Lebih tajam lagi, untuk target spesifik pada klasifikasi peran terbanyak saat ini, keahlian yang mutlak diperlukan adalah <b>{job_skill_str}</b>.<br><br>
             Dari Heatmap matriks hubungan di atas, meskipun terdapat garis pola antara lulusan ilmu teknik (<i>engineering</i>) dengan penyerapan kerja berbasis pemrograman, <b>sebarannya tetap membuktikan bahwa seseorang dengan jurusan yang sama bisa menapaki karir yang sama sekali berbeda.</b><br><br>
             <i>Kesimpulan Bisnis:</i> Model rekomendasi AI kita tidak boleh bergantung pada kolom pendidikan formal ('Study Field') semata, melainkan wajib membangun algoritma klasifikasi berbasis penguasaan kompetensi praktis (<i>Skill-Driven Classification</i>) yang tercantum di profil mereka.</div>
@@ -411,7 +406,7 @@ with tab4:
         <div class="insight-card">
             <div class="question-title">2. Kategori course apa yang paling populer berdasarkan jumlah subscriber?</div>
             <hr style='margin: 10px 0; border: 0; border-top: 1px solid #e2e8f0;'>
-            <div class="insight-text">💡 <b>Insight & Jawaban (Dinamis):</b> <br>
+            <div class="insight-text"> <b>Insight & Jawaban (Dinamis):</b> <br>
             Berdasarkan <b>{total_udemy:,}</b> data katalog kursus Udemy yang tersedia pada parameter filter saat ini, fokus proporsi tingkat kesulitan (*Course Level*) terbanyak adalah kelas untuk level <b>{top_level}</b>.<br><br>
             Jika kita melihat dari segi peminat (Subscribers), kursus yang menduduki peringkat teratas (Ranking #1) adalah <b>"{top_course_title}"</b>. Hal ini merefleksikan tren permintaan pasar yang sangat tinggi terhadap keterampilan pada materi tersebut.<br><br>
             <i>Penerapan untuk AI:</i> Kumpulan kursus <i>top-rated</i> inilah yang akan menjadi *"Bank Solusi"* bagi model Machine Learning. Ketika sistem mendeteksi adanya kesenjangan (<i>skill gap</i>) antara keahlian saat ini yang dimiliki pengguna dengan tuntutan lowongan kerja idamannya, AI akan secara otomatis memanggil dan menyarankan kursus-kursus relevan dari bank data ini.</div>
